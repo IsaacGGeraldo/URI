@@ -3,12 +3,14 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+// para corrigir:
+// o programa deve primeiro pegar todas as entradas para entregar as saidas.
+
 // DEFINES ********************************************************************************************************************
 
 #define Max 1010
 
 // DECLARAÇÃO DA STRUCT *******************************************************************************************************
-
 
 struct pilha
 {
@@ -23,37 +25,44 @@ int Push(struct pilha *AA,int valor);                                    //ADICI
 int Pop(struct pilha *AA);                                              //TIRA UM ELEMENTO DA PILHA
 int Mostra(struct pilha *AA);
 char *LerExpressao(char *str);
-struct pilha *TrataParentese(char*str);
+struct pilha *TrataDiamante(char*str);
 
 // FUNÇÂO PRINCIPAL ***********************************************************************************************************
 int main()
 {
-    int aux,abre,fecha,i;
+    int aux,diamantes,fecha,i,n=1;
     char* expressao;
     struct pilha *parenteses;
     bool certo=true;
-    for(i=1;i<=1000;i++)
+    scanf("%d",&n);
+    setbuf(stdin,NULL);
+    for(i=1;i<=n;i++)
     {
-        expressao= LerExpressao(expressao);
-        parenteses=TrataParentese(expressao);
+        expressao = LerExpressao(expressao);
+        parenteses = TrataDiamante(expressao);
 
         /*printf("EM UMA STRING: %s\n",expressao);
-        printf("EM UMA PILHA:");
-        Mostra(parenteses);
-        printf("\n");*/
-
-        abre=0;fecha=0,certo=true;
-        do
+        if(!PilhaVazia(parenteses))
         {
-            aux=Pop(parenteses);
-            if(aux==40 && fecha==0)certo=false;
-            else if(aux==41)fecha++;
-            else if(aux==40 && fecha>0)fecha--;
-            else abre++;
-        } while (!PilhaVazia(parenteses) && certo==true);
-        if(abre != fecha)certo=false;
-        if(certo)printf("correct\n");
-        else printf("incorrect\n");
+            printf("EM UMA PILHA:");
+            Mostra(parenteses);
+            printf("\n");
+        }*/
+
+        fecha=0;diamantes=0;
+        do {
+            if(!PilhaVazia(parenteses))
+                aux=Pop(parenteses);
+            else
+                aux=0;
+            if(aux== '>')
+                fecha++;
+            else if(aux=='<' && fecha) {
+                fecha--;
+                diamantes++;
+            }
+        } while (!PilhaVazia(parenteses));
+        printf("%d\n",diamantes);
     }
     
     return 0;
@@ -61,30 +70,28 @@ int main()
 
 // FUNÇÕES AUXILIARES *********************************************************************************************************
 
-void IniciaPilha(struct pilha *AA)
-{
+void IniciaPilha(struct pilha *AA) {
     AA->topo=-1;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
-int PilhaVazia(struct pilha *AA)
-{
-    if(AA->topo==-1)return 1;
-    else return 0;
+int PilhaVazia(struct pilha *AA) {
+    if(AA->topo==-1)
+        return 1;
+    else
+        return 0;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
-int Push(struct pilha *AA,int valor)
-{
+int Push(struct pilha *AA,int valor) {
     return (AA->item[++(AA->topo)]=valor);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
-int Pop(struct pilha *AA)
-{
+int Pop(struct pilha *AA) {
     int aux;
     aux = AA->item[(AA->topo)--];
     return aux;
@@ -97,14 +104,12 @@ int Mostra(struct pilha *AA)
     struct pilha AAux;
     IniciaPilha(&AAux);
     //system("cls");
-    while(!PilhaVazia(AA))
-    {
+    while (!PilhaVazia(AA)) {
         aux=Pop(AA);
         printf("  %d",aux);
         Push(&AAux,aux);
     }
-    while(!PilhaVazia(&AAux))
-    {
+    while (!PilhaVazia(&AAux)) {
         aux=Pop(&AAux);
         Push(AA,aux);
     }
@@ -112,25 +117,22 @@ int Mostra(struct pilha *AA)
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------
- 
+
 char *LerExpressao(char *str)
 {
     str = (char *)malloc(0);
     int c,i=0;
-    while((c=getchar())!='\n')
-    {
+    while ((c=getchar())!='\n') {
         i++;
         str= (char *)realloc(str,i*sizeof(char));
-        if(str==NULL)
-        {
+        if(str==NULL) {
             printf("MEMORIA INSUFICIENTE.\n");
             exit(1);
         }
         str[i-1]=c;
     }
     str = (char *)realloc(str,(i+1)*sizeof(char));
-    if(str==NULL)
-    {
+    if(str==NULL) {
         printf("MEMORIA INSUFICIENTE\n");
         exit(1);
     }
@@ -141,18 +143,15 @@ char *LerExpressao(char *str)
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
-struct pilha *TrataParentese(char*str)
-{
+struct pilha *TrataDiamante(char*str) {
     struct pilha *retorno;
     int i=0,c;
     retorno= (struct pilha *)malloc(sizeof(struct pilha));
     IniciaPilha(retorno);
-    while(str[i] != '\0')
-    {
+    while(str[i] != '\0') {
         c=str[i];
-        if(!isdigit(c))
-        {
-            if(c=='(' || c==')')Push(retorno,c);
+        if(!isdigit(c)) {
+            if(c=='<' || c=='>')Push(retorno,c);
         }
         i++;
     }

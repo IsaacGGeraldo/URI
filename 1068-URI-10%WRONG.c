@@ -23,43 +23,37 @@ int Push(struct pilha *AA,int valor);                                    //ADICI
 int Pop(struct pilha *AA);                                              //TIRA UM ELEMENTO DA PILHA
 int Mostra(struct pilha *AA);
 char *LerExpressao(char *str);
-struct pilha *TrataDiamante(char*str);
+struct pilha *TrataParentese(char*str);
 
 // FUNÇÂO PRINCIPAL ***********************************************************************************************************
 int main()
 {
-    int aux,diamantes,fecha,i,n=1;
+    int aux,abre,fecha,i;
     char* expressao;
     struct pilha *parenteses;
     bool certo=true;
-    scanf("%d",&n);
-    setbuf(stdin,NULL);
-    for(i=1;i<=n;i++)
+    for(i=1;i<=1000;i++)
     {
         expressao= LerExpressao(expressao);
-        parenteses=TrataDiamante(expressao);
+        parenteses=TrataParentese(expressao);
 
         /*printf("EM UMA STRING: %s\n",expressao);
-        if(!PilhaVazia(parenteses))
-        {
-            printf("EM UMA PILHA:");
-            Mostra(parenteses);
-            printf("\n");
-        }*/
+        printf("EM UMA PILHA:");
+        Mostra(parenteses);
+        printf("\n");*/
 
-        fecha=0;diamantes=0;
+        abre=0;fecha=0,certo=true;
         do
         {
-            if(!PilhaVazia(parenteses))aux=Pop(parenteses);
-            else aux=0;
-            if(aux== '>')fecha++;
-            else if(aux=='<' && fecha)
-            {
-                fecha--;
-                diamantes++;
-            }
-        } while (!PilhaVazia(parenteses));
-        printf("%d\n",diamantes);
+            aux=Pop(parenteses);
+            if(aux==40 && fecha==0)certo=false;
+            else if(aux==41)fecha++;
+            else if(aux==40 && fecha>0)fecha--;
+            else abre++;
+        } while (!PilhaVazia(parenteses) && certo==true);
+        if(abre != fecha)certo=false;
+        if(certo)printf("correct\n");
+        else printf("incorrect\n");
     }
     
     return 0;
@@ -118,7 +112,6 @@ int Mostra(struct pilha *AA)
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------
- 
 char *LerExpressao(char *str)
 {
     str = (char *)malloc(0);
@@ -147,7 +140,7 @@ char *LerExpressao(char *str)
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
-struct pilha *TrataDiamante(char*str)
+struct pilha *TrataParentese(char*str)
 {
     struct pilha *retorno;
     int i=0,c;
@@ -158,7 +151,7 @@ struct pilha *TrataDiamante(char*str)
         c=str[i];
         if(!isdigit(c))
         {
-            if(c=='<' || c=='>')Push(retorno,c);
+            if(c=='(' || c==')')Push(retorno,c);
         }
         i++;
     }
