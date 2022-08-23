@@ -25,6 +25,8 @@ Questões do URI judge
 
 1046 - accepted             - linguagens: Java
 
+1051 - accepted             - linguagens: Java
+
 1059 - accepted             - linguagens: C
 
 1062 - accepted             - linguagens: C
@@ -43,7 +45,13 @@ Questões do URI judge
 
 1101 - accepted             - linguagens: C
 
+1114 - accepted             - lingragens: Java
+
+1115 - accepted             - lingragens: Java
+
 1132 - accepted             - linguagens: C
+
+1134 - accepted             - lingragens: Java
 
 1151 - accepted             - linguagens: C
 
